@@ -1,4 +1,4 @@
-package corrector;
+package aplicacion.corrector;
 
 import org.languagetool.rules.RuleMatch;
 

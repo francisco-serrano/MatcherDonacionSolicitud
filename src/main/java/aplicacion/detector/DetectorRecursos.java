@@ -1,4 +1,4 @@
-package detector;
+package aplicacion.detector;
 
 public class DetectorRecursos {
 

@@ -1,4 +1,4 @@
-package corrector;
+package aplicacion.corrector;
 
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.Spanish;
