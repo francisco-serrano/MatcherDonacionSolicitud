@@ -64,21 +64,16 @@ public class ConsultorSynsets {
             e.printStackTrace();
         }
 
-        for (Integer synsetKey : synsets.keys()) {
-            synsetCounter.putIfAbsent(synsetKey, new AtomicLong(0));
-            synsetCounter.get(synsetKey).incrementAndGet();
-        }
-
         return synsets;
     }
 
-    public boolean selectSynset(int synset_id) {
-        System.out.println("ABURUBA");
+    public String selectSynset(int synset_id) {
+        System.out.println("Se recibió el synset: " + synset_id);
 
         synsetCounter.putIfAbsent(synset_id, new AtomicLong(0));
         synsetCounter.get(synset_id).incrementAndGet();
 
-        return true;
+        return "Contador actualizado";
     }
 
     public Map<Integer, AtomicLong> getSynsetCounter() {

@@ -49,8 +49,8 @@ public class Controlador {
     }
 
     @RequestMapping(value = "/select_synset", method = RequestMethod.PUT, produces = "text/plain")
-    public boolean selectSynset(@RequestParam(value = "synset_id") int synsetId) {
-        return consultorSynsets.selectSynset(synsetId);
+    public String selectSynset(@RequestParam(value = "synset_id") String synsetId) {
+        return consultorSynsets.selectSynset(Integer.parseInt(synsetId));
     }
 
     @RequestMapping(value = "/synsetcounter", method = RequestMethod.GET, produces = "application/json")
