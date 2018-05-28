@@ -1,0 +1,1 @@
+select b.word as `palabra`, b.synset as `id_synset` from variant as a join variant as b on a.synset = b.synset where a.word=? and b.word!=a.word order by b.synset;
