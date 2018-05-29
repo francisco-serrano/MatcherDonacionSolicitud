@@ -1,6 +1,7 @@
 package aplicacion.synset;
 
 import aplicacion.Database;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -8,11 +9,33 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class ConsultorSynsets {
+
+    private class SynsetSelection {
+        private String word;
+        private int synsetId;
+
+        public SynsetSelection(String word, int synsetId) {
+            this.word = word;
+            this.synsetId = synsetId;
+        }
+
+        public String getWord() {
+            return word;
+        }
+
+        public int getSynsetId() {
+            return synsetId;
+        }
+    }
 
     private String ip;
     private String dbName;
@@ -22,7 +45,7 @@ public class ConsultorSynsets {
     private Connection connection;
     private String query;
 
-    private final Map<Integer, AtomicLong> synsetCounter = new ConcurrentHashMap<>();
+    private final List<String> seleccionSynsetsUsuario = new CopyOnWriteArrayList<>();
 
     public ConsultorSynsets(Database db) {
         this.ip = db.getIp();
@@ -67,16 +90,39 @@ public class ConsultorSynsets {
         return synsets;
     }
 
-    public String selectSynset(int synset_id) {
-        System.out.println("Se recibió el synset: " + synset_id);
+    public String selectSynsets(String synsetSelection) {
+        System.out.println("Se recibió la siguiente selección de synsets: " + synsetSelection);
 
-        synsetCounter.putIfAbsent(synset_id, new AtomicLong(0));
-        synsetCounter.get(synset_id).incrementAndGet();
+        seleccionSynsetsUsuario.addAll(Splitter.on("; ").splitToList(synsetSelection));
 
-        return "Contador actualizado";
+        return "Selección almacenada";
     }
 
-    public Map<Integer, AtomicLong> getSynsetCounter() {
-        return synsetCounter;
+    public Map<String, Map<Integer, AtomicLong>> getSynsetCounter() {
+        Multimap<String, Integer> mapeoPalabraSynsets = ArrayListMultimap.create();
+
+        seleccionSynsetsUsuario.forEach(s -> {
+            List<String> aux2 = Splitter.on(": ").splitToList(s);
+
+            assert aux2.size() == 2;
+
+            mapeoPalabraSynsets.put(aux2.get(0), Integer.parseInt(aux2.get(1)));
+        });
+
+        // {'manta': {23345: 1, 45553: 3}, 'casa': {34431: 5, 3234: 2}}
+        Map<String, Map<Integer, AtomicLong>> wordSynsetCounter = new HashMap<>();
+
+        mapeoPalabraSynsets.keySet().forEach(word -> {
+            Map<Integer, AtomicLong> contadorSynsets = new HashMap<>();
+
+            mapeoPalabraSynsets.get(word).forEach(synsetId -> {
+                contadorSynsets.putIfAbsent(synsetId, new AtomicLong(0));
+                contadorSynsets.get(synsetId).incrementAndGet();
+            });
+
+            wordSynsetCounter.put(word, contadorSynsets);
+        });
+
+        return wordSynsetCounter;
     }
 }

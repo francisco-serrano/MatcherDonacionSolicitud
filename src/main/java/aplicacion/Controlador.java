@@ -48,13 +48,13 @@ public class Controlador {
         return synsets;
     }
 
-    @RequestMapping(value = "/select_synset", method = RequestMethod.PUT, produces = "text/plain")
-    public String selectSynset(@RequestParam(value = "synset_id") String synsetId) {
-        return consultorSynsets.selectSynset(Integer.parseInt(synsetId));
+    @RequestMapping(value = "/select_synsets", method = RequestMethod.PUT, produces = "text/plain")
+    public String selectSynsets(@RequestParam(value = "synsets") String synsets) {
+        return consultorSynsets.selectSynsets(synsets);
     }
 
     @RequestMapping(value = "/synsetcounter", method = RequestMethod.GET, produces = "application/json")
-    public Map<Integer, AtomicLong> getSynsetCounter() {
+    public Map<String, Map<Integer, AtomicLong>> getSynsetCounter() {
         return consultorSynsets.getSynsetCounter();
     }
 }
