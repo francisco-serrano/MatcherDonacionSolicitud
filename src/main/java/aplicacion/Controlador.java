@@ -49,7 +49,12 @@ public class Controlador {
     }
 
     @RequestMapping(value = "/select_synsets", method = RequestMethod.PUT, produces = "text/plain")
-    public String selectSynsets(@RequestParam(value = "synsets") String synsets) {
+    public String selectSynsets(@RequestParam(value = "synsets") String synsets,
+                                @RequestParam(value = "estaDonando") boolean estaDonando) {
+        // LLAMAR A UN MATCHER
+        System.out.println("Se recibió la siguiente selección de synsets: " + synsets);
+        System.out.println("Está donando? " + estaDonando);
+
         return consultorSynsets.selectSynsets(synsets);
     }
 

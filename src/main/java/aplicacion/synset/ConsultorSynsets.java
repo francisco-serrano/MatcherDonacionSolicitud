@@ -91,10 +91,7 @@ public class ConsultorSynsets {
     }
 
     public String selectSynsets(String synsetSelection) {
-        System.out.println("Se recibió la siguiente selección de synsets: " + synsetSelection);
-
         seleccionSynsetsUsuario.addAll(Splitter.on("; ").splitToList(synsetSelection));
-
         return "Selección almacenada";
     }
 
