@@ -48,4 +48,18 @@ public class Recurso {
     public boolean isNew() {
         return isNew;
     }
+
+    //TODO: lo ideal sería pasarlo a JSON
+    @Override
+    public String toString() {
+        return "Recurso{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", stemm='" + stemm + '\'' +
+                ", cant=" + cant +
+                ", isValid=" + isValid +
+                ", isCoincidence=" + isCoincidence +
+                ", isNew=" + isNew +
+                '}';
+    }
 }

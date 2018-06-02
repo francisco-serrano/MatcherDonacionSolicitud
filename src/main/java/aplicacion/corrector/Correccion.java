@@ -41,4 +41,16 @@ public class Correccion {
     public List<String> getReemplazosSugeridos() {
         return reemplazosSugeridos;
     }
+
+    @Override
+    public String toString() {
+        return "Correccion{" +
+                "id=" + id +
+                ", palabraErronea='" + palabraErronea + '\'' +
+                ", indiceInicial=" + indiceInicial +
+                ", indiceFinal=" + indiceFinal +
+                ", mensajeCorreccion='" + mensajeCorreccion + '\'' +
+                ", reemplazosSugeridos=" + reemplazosSugeridos +
+                '}';
+    }
 }

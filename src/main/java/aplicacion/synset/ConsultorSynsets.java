@@ -12,57 +12,22 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 public class ConsultorSynsets {
-
-    private class SynsetSelection {
-        private String word;
-        private int synsetId;
-
-        public SynsetSelection(String word, int synsetId) {
-            this.word = word;
-            this.synsetId = synsetId;
-        }
-
-        public String getWord() {
-            return word;
-        }
-
-        public int getSynsetId() {
-            return synsetId;
-        }
-    }
-
-    private String ip;
-    private String dbName;
-    private String user;
-    private String password;
 
     private Connection connection;
     private String query;
 
     private final List<String> seleccionSynsetsUsuario = new CopyOnWriteArrayList<>();
 
-    public ConsultorSynsets(Database db) {
-        this.ip = db.getIp();
-        this.dbName = db.getDbName();
-        this.user = db.getUser();
-        this.password = db.getPassword();
-
-        connectToDatabase();
-    }
-
-    private void connectToDatabase() {
-
-        String url = "jdbc:mysql://" + this.ip + "/" + this.dbName + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    public void setUpDatabase(Database db) {
+        String url = "jdbc:mysql://" + db.getIp() + "/" + db.getDbName() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
             query = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/query_modificado.sql")).readLine();
-            connection = DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(url, db.getUser(), db.getPassword());
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
