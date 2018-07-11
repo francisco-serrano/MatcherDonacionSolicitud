@@ -1,6 +1,6 @@
 package aplicacion.synset;
 
-import aplicacion.Database;
+import aplicacion.configuration.DatabaseConfiguration;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class ConsultorSynsets {
 
@@ -22,7 +23,7 @@ public class ConsultorSynsets {
 
     private final List<String> seleccionSynsetsUsuario = new CopyOnWriteArrayList<>();
 
-    public void setUpDatabase(Database db) {
+    public void setUpDatabase(DatabaseConfiguration db) {
         String url = "jdbc:mysql://" + db.getIp() + "/" + db.getDbName() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
@@ -67,7 +68,7 @@ public class ConsultorSynsets {
         return "Selección almacenada";
     }
 
-    public Map<String, Map<String, Integer>> getSynsetCounter() {
+    public Map<String, Map<String, Integer>> getSynsetCounter(String listaPalabras) {
         Multimap<String, Integer> mapeoPalabraSynsets = ArrayListMultimap.create();
 
         Map<Integer, String> mapeoSynsetPalabra = new HashMap<>();
@@ -107,6 +108,16 @@ public class ConsultorSynsets {
 
             wordSynsetSynonymCounter.put(palabra, synsetSynonymCounter);
         });
+
+        List<String> palabrasObtener = Splitter.on(',').splitToList(listaPalabras);
+
+        if (palabrasObtener.size() == 1 && palabrasObtener.get(0).equals(""))
+            return wordSynsetSynonymCounter;
+
+        wordSynsetSynonymCounter.keySet().stream()
+                .filter(palabra -> !palabrasObtener.contains(palabra))
+                .collect(Collectors.toList())
+                .forEach(wordSynsetSynonymCounter::remove);
 
         return wordSynsetSynonymCounter;
     }

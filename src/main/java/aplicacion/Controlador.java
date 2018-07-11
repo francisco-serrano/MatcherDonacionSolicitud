@@ -1,5 +1,7 @@
 package aplicacion;
 
+import aplicacion.configuration.DatabaseConfiguration;
+import aplicacion.configuration.ServerConfiguration;
 import aplicacion.corrector.CorrectorOrtografico;
 import aplicacion.detector.DetectorRecursos;
 import aplicacion.synset.ConsultorSynsets;
@@ -11,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class Controlador {
@@ -20,16 +21,18 @@ public class Controlador {
     private DetectorRecursos detector = new DetectorRecursos();
     private ConsultorSynsets consultorSynsets = new ConsultorSynsets();
 
+    private ServerSocket serverSocket = new ServerSocket();
+
     @Autowired
-    public Controlador() {
-        ServerSocket serverSocket = new ServerSocket("localhost", 8081); //TODO: parametrizarlo
-        serverSocket.setUpListeners(corrector, detector, consultorSynsets);
-        serverSocket.start();
+    public void setDatabaseConfiguration(DatabaseConfiguration databaseConfiguration) {
+        consultorSynsets.setUpDatabase(databaseConfiguration);
     }
 
     @Autowired
-    public void setDatabase(Database database) {
-        consultorSynsets.setUpDatabase(database);
+    public void setServerConfiguration(ServerConfiguration serverConfiguration) {
+        serverSocket.setupServer(serverConfiguration);
+        serverSocket.setUpListeners(corrector, detector, consultorSynsets);
+        serverSocket.start();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = "text/html")
@@ -37,18 +40,10 @@ public class Controlador {
         return serveHtml();
     }
 
-    /*
-        Si no hay parámetros, que muestre todoh (ya estaria)
-        Y si hay parámetro, sería la palabra, en donde retorno los synsets (y sinonimos) asociados
-        Separar id_synset del sinonimo con $$ (sin espacio)
-
-    */
-    // TODO: agregar el sinónimo al id_synset
-    // TODO: ingresando un recurso, que retorne la cantidad para un determinado id_synset
-
     @RequestMapping(value = "/synsetcounter", method = RequestMethod.GET, produces = "application/json")
-    public Map<String, Map<String, Integer>> getSynsetCounter() {
-        return consultorSynsets.getSynsetCounter();
+    public Map<String, Map<String, Integer>> getSynsetCounter(@RequestParam(value = "palabras", defaultValue = "") String listaPalabras) {
+        // La lista de palabras debe estar separada por coma
+        return consultorSynsets.getSynsetCounter(listaPalabras);
     }
 
     private String serveHtml() {

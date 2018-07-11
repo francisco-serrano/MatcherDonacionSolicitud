@@ -1,5 +1,6 @@
 package aplicacion;
 
+import aplicacion.configuration.ServerConfiguration;
 import aplicacion.corrector.Correccion;
 import aplicacion.corrector.CorrectorOrtografico;
 import aplicacion.detector.DetectorRecursos;
@@ -14,10 +15,10 @@ public class ServerSocket {
 
     private SocketIOServer serverSocket;
 
-    public ServerSocket(String hostname, int port) {
+    public void setupServer(ServerConfiguration serverConfiguration) {
         Configuration configuration = new Configuration();
-        configuration.setHostname(hostname);
-        configuration.setPort(port);
+        configuration.setHostname(serverConfiguration.getUrl());
+        configuration.setPort(serverConfiguration.getPort());
 
         serverSocket = new SocketIOServer(configuration);
     }
