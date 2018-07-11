@@ -37,8 +37,17 @@ public class Controlador {
         return serveHtml();
     }
 
+    /*
+        Si no hay parámetros, que muestre todoh (ya estaria)
+        Y si hay parámetro, sería la palabra, en donde retorno los synsets (y sinonimos) asociados
+        Separar id_synset del sinonimo con $$ (sin espacio)
+
+    */
+    // TODO: agregar el sinónimo al id_synset
+    // TODO: ingresando un recurso, que retorne la cantidad para un determinado id_synset
+
     @RequestMapping(value = "/synsetcounter", method = RequestMethod.GET, produces = "application/json")
-    public Map<String, Map<Integer, AtomicLong>> getSynsetCounter() {
+    public Map<String, Map<String, Integer>> getSynsetCounter() {
         return consultorSynsets.getSynsetCounter();
     }
 

@@ -10,6 +10,7 @@
 
     <properties>
         <java.version>9</java.version>
+        <start-class>aplicacion.Application</start-class>
     </properties>
 
     <parent>
@@ -62,6 +63,14 @@
             <version>1.7.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>pps.correctorortografico.detector-recursos</groupId>
+            <artifactId>detector-recursos</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/detector-recursos.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -69,6 +78,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -78,6 +98,7 @@
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
+
     </repositories>
 
     <pluginRepositories>

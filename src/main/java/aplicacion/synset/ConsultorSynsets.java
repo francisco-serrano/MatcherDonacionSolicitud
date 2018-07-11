@@ -56,19 +56,30 @@ public class ConsultorSynsets {
     }
 
     public String selectSynsets(String synsetSelection) {
+        if (synsetSelection.length() == 0) {
+            System.out.println("SE MANDO UN STRING VACIO --> NINGUNO DE LOS SYNSETS ENVIADOS SE CORRESPONDEN!!!");
+
+            // TODO: Ir a la base y agregarlo
+        }
+
         seleccionSynsetsUsuario.addAll(Splitter.on("; ").splitToList(synsetSelection));
+
         return "Selección almacenada";
     }
 
-    public Map<String, Map<Integer, AtomicLong>> getSynsetCounter() {
+    public Map<String, Map<String, Integer>> getSynsetCounter() {
         Multimap<String, Integer> mapeoPalabraSynsets = ArrayListMultimap.create();
 
-        seleccionSynsetsUsuario.forEach(s -> {
-            List<String> aux2 = Splitter.on(": ").splitToList(s);
+        Map<Integer, String> mapeoSynsetPalabra = new HashMap<>();
 
-            assert aux2.size() == 2;
+        seleccionSynsetsUsuario.forEach(s -> {
+            List<String> aux2 = Splitter.on(":").splitToList(s);
+
+            assert aux2.size() == 3;
 
             mapeoPalabraSynsets.put(aux2.get(0), Integer.parseInt(aux2.get(1)));
+
+            mapeoSynsetPalabra.put(Integer.parseInt(aux2.get(1)), aux2.get(2));
         });
 
         // {'manta': {23345: 1, 45553: 3}, 'casa': {34431: 5, 3234: 2}}
@@ -85,6 +96,18 @@ public class ConsultorSynsets {
             wordSynsetCounter.put(word, contadorSynsets);
         });
 
-        return wordSynsetCounter;
+        Map<String, Map<String, Integer>> wordSynsetSynonymCounter = new HashMap<>();
+
+        wordSynsetCounter.forEach((palabra, synsetCounter) -> {
+            Map<String, Integer> synsetSynonymCounter = new HashMap<>();
+
+            synsetCounter.forEach((synset_id, cantidad) -> {
+                synsetSynonymCounter.put(synset_id + "$$" + mapeoSynsetPalabra.get(synset_id), Math.toIntExact(cantidad.get()));
+            });
+
+            wordSynsetSynonymCounter.put(palabra, synsetSynonymCounter);
+        });
+
+        return wordSynsetSynonymCounter;
     }
 }

@@ -8,10 +8,7 @@ import aplicacion.synset.ConsultorSynsets;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServerSocket {
 
@@ -42,11 +39,24 @@ public class ServerSocket {
 
             socketCliente.sendEvent("resultadoDeteccion", recursos.toString());
 
-            Map<String, Map<Integer, Collection<String>>> synsets = new HashMap<>();
+            Map<String, Map<Integer, Collection<String>>> synset_mapping = new HashMap<>();
 
-            recursos.forEach(recurso -> synsets.put(recurso.getName(), consultor.getSynsets(recurso.getName()).asMap()));
+            recursos.forEach(recurso ->
+                    synset_mapping.put(recurso.getName(), consultor.getSynsets(recurso.getName()).asMap())
+            );
 
-            socketCliente.sendEvent("listaSignificados", synsets.toString());
+            List<String> valoresRadioButton = new ArrayList<>();
+            String pattern = "[\\[\\]]";
+
+            synset_mapping.forEach((palabra, synsets) -> {
+                synsets.forEach((id_synset, lista_sinonimos) -> {
+                    valoresRadioButton.add((palabra + ":" + id_synset + ":" + lista_sinonimos.toString())
+                            .replaceAll(pattern, "")
+                    );
+                });
+            });
+
+            socketCliente.sendEvent("listaSignificados", valoresRadioButton.toString());
         });
 
         serverSocket.addEventListener("synsetElegido", Map.class, (socketCliente, map, ackRequest) -> {
