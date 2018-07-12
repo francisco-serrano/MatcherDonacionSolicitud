@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:serverconfig.properties")
+@PropertySource("classpath:serviceconfig.properties")
 @ConfigurationProperties
 public class ServiceConfiguration {
 

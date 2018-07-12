@@ -1,8 +1,6 @@
 package aplicacion;
 
-import aplicacion.corrector.CorrectorOrtografico;
-import aplicacion.detector.DetectorRecursos;
-import aplicacion.synset.ConsultorSynsets;
+import aplicacion.model.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,26 +13,27 @@ import java.util.*;
 @RestController
 public class Controlador {
 
-    private CorrectorOrtografico corrector = new CorrectorOrtografico();
-    private DetectorRecursos detector = new DetectorRecursos();
-    private ConsultorSynsets consultorSynsets = new ConsultorSynsets();
-    private ServerSocket serverSocket = new ServerSocket();
+//    private CorrectorOrtografico corrector = new CorrectorOrtografico();
+//    private DetectorRecursos detector = new DetectorRecursos();
+//    private ConsultorSynsets consultorSynsets = new ConsultorSynsets();
+//    private ServerSocket serverSocket = new ServerSocket();
+
+    private Model model;
 
     @Autowired
-    public void setConfiguration(ServiceConfiguration configuration) {
-        setDatabaseConfiguration(configuration);
-        setServerConfiguration(configuration);
+    public void createModel(ServiceConfiguration configuration) {
+        model = new Model(configuration);
     }
 
-    private void setDatabaseConfiguration(ServiceConfiguration configuration) {
-        consultorSynsets.setUpDatabase(configuration);
-    }
-
-    private void setServerConfiguration(ServiceConfiguration configuration) {
-        serverSocket.setupServer(configuration);
-        serverSocket.setUpListeners(corrector, detector, consultorSynsets);
-        serverSocket.start();
-    }
+//    private void setDatabaseConfiguration(ServiceConfiguration configuration) {
+//        consultorSynsets.setUpDatabase(configuration);
+//    }
+//
+//    private void setServerConfiguration(ServiceConfiguration configuration) {
+//        serverSocket.setupServer(configuration);
+//        serverSocket.setUpListeners(corrector, detector, consultorSynsets);
+//        serverSocket.start();
+//    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = "text/html")
     public String index() {
@@ -44,7 +43,8 @@ public class Controlador {
     @RequestMapping(value = "/synsetcounter", method = RequestMethod.GET, produces = "application/json")
     public Map<String, Map<String, Integer>> getSynsetCounter(@RequestParam(value = "palabras", defaultValue = "") String listaPalabras) {
         // La lista de palabras debe estar separada por coma
-        return consultorSynsets.getSynsetCounter(listaPalabras);
+//        return consultorSynsets.getSynsetCounter(listaPalabras);
+        return model.getSynsetCounter(listaPalabras);
     }
 
     private String serveHtml() {
