@@ -1,5 +1,6 @@
 package aplicacion.synset;
 
+import aplicacion.ServiceConfiguration;
 import aplicacion.configuration.DatabaseConfiguration;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
@@ -23,12 +24,23 @@ public class ConsultorSynsets {
 
     private final List<String> seleccionSynsetsUsuario = new CopyOnWriteArrayList<>();
 
-    public void setUpDatabase(DatabaseConfiguration db) {
-        String url = "jdbc:mysql://" + db.getIp() + "/" + db.getDbName() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+//    public void setUpDatabase(DatabaseConfiguration db) {
+//        String url = "jdbc:mysql://" + db.getIp() + "/" + db.getDbName() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+//
+//        try {
+//            query = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/query_modificado.sql")).readLine();
+//            connection = DriverManager.getConnection(url, db.getUser(), db.getPassword());
+//        } catch (SQLException | IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void setUpDatabase(ServiceConfiguration configuration) {
+        String url = "jdbc:mysql://" + configuration.getDatabase_ip() + "/" + configuration.getDatabase_name() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
             query = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/query_modificado.sql")).readLine();
-            connection = DriverManager.getConnection(url, db.getUser(), db.getPassword());
+            connection = DriverManager.getConnection(url, configuration.getDatabase_user(), configuration.getDatabase_pass());
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }

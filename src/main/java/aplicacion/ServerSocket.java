@@ -1,6 +1,5 @@
 package aplicacion;
 
-import aplicacion.configuration.ServerConfiguration;
 import aplicacion.corrector.Correccion;
 import aplicacion.corrector.CorrectorOrtografico;
 import aplicacion.detector.DetectorRecursos;
@@ -8,6 +7,7 @@ import aplicacion.detector.Recurso;
 import aplicacion.synset.ConsultorSynsets;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.google.common.base.Joiner;
 
 import java.util.*;
 
@@ -15,12 +15,20 @@ public class ServerSocket {
 
     private SocketIOServer serverSocket;
 
-    public void setupServer(ServerConfiguration serverConfiguration) {
-        Configuration configuration = new Configuration();
-        configuration.setHostname(serverConfiguration.getUrl());
-        configuration.setPort(serverConfiguration.getPort());
+//    public void setupServer(ServerConfiguration serverConfiguration) {
+//        Configuration configuration = new Configuration();
+//        configuration.setHostname(serverConfiguration.getUrl());
+//        configuration.setPort(serverConfiguration.getPort());
+//
+//        serverSocket = new SocketIOServer(configuration);
+//    }
 
-        serverSocket = new SocketIOServer(configuration);
+    public void setupServer(ServiceConfiguration configuration) {
+        Configuration conf = new Configuration();
+        conf.setHostname(configuration.getServer_url());
+        conf.setPort(configuration.getServersocket_port());
+
+        serverSocket = new SocketIOServer(conf);
     }
 
     public void setUpListeners(CorrectorOrtografico corrector, DetectorRecursos detector, ConsultorSynsets consultor) {
@@ -57,7 +65,7 @@ public class ServerSocket {
                 });
             });
 
-            socketCliente.sendEvent("listaSignificados", valoresRadioButton.toString());
+            socketCliente.sendEvent("listaSignificados", Joiner.on(';').join(valoresRadioButton).toString());
         });
 
         serverSocket.addEventListener("synsetElegido", Map.class, (socketCliente, map, ackRequest) -> {

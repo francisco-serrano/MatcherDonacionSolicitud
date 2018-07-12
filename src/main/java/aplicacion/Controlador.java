@@ -1,7 +1,5 @@
 package aplicacion;
 
-import aplicacion.configuration.DatabaseConfiguration;
-import aplicacion.configuration.ServerConfiguration;
 import aplicacion.corrector.CorrectorOrtografico;
 import aplicacion.detector.DetectorRecursos;
 import aplicacion.synset.ConsultorSynsets;
@@ -20,23 +18,26 @@ public class Controlador {
     private CorrectorOrtografico corrector = new CorrectorOrtografico();
     private DetectorRecursos detector = new DetectorRecursos();
     private ConsultorSynsets consultorSynsets = new ConsultorSynsets();
-
     private ServerSocket serverSocket = new ServerSocket();
 
     @Autowired
-    public void setDatabaseConfiguration(DatabaseConfiguration databaseConfiguration) {
-        consultorSynsets.setUpDatabase(databaseConfiguration);
+    public void setConfiguration(ServiceConfiguration configuration) {
+        setDatabaseConfiguration(configuration);
+        setServerConfiguration(configuration);
     }
 
-    @Autowired
-    public void setServerConfiguration(ServerConfiguration serverConfiguration) {
-        serverSocket.setupServer(serverConfiguration);
+    private void setDatabaseConfiguration(ServiceConfiguration configuration) {
+        consultorSynsets.setUpDatabase(configuration);
+    }
+
+    private void setServerConfiguration(ServiceConfiguration configuration) {
+        serverSocket.setupServer(configuration);
         serverSocket.setUpListeners(corrector, detector, consultorSynsets);
         serverSocket.start();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = "text/html")
-    public String index() throws IOException {
+    public String index() {
         return serveHtml();
     }
 
