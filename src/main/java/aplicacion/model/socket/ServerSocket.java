@@ -1,11 +1,11 @@
 package aplicacion.model.socket;
 
-import aplicacion.ServiceConfiguration;
+import aplicacion.model.ServiceConfiguration;
 import aplicacion.model.corrector.Correccion;
 import aplicacion.model.corrector.CorrectorOrtografico;
 import aplicacion.model.detector.DetectorRecursos;
 import aplicacion.model.detector.Recurso;
-import aplicacion.model.synset.ConsultorSynsets;
+import aplicacion.model.consultor.ConsultorSynsets;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.common.base.Joiner;

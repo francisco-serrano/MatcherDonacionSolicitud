@@ -1,13 +1,11 @@
-package aplicacion.model.synset;
+package aplicacion.model.consultor;
 
-import aplicacion.ServiceConfiguration;
+import aplicacion.model.ServiceConfiguration;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +25,9 @@ public class ConsultorSynsets {
         String url = "jdbc:mysql://" + configuration.getDatabase_ip() + "/" + configuration.getDatabase_name() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
-            query = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/query_modificado.sql")).readLine();
+            query = new ClassPathResource("query_modificado.sql").toString();
             connection = DriverManager.getConnection(url, configuration.getDatabase_user(), configuration.getDatabase_pass());
-        } catch (SQLException | IOException e) {
+        } catch (SQLException /*| IOException*/ e) {
             e.printStackTrace();
         }
     }
@@ -76,14 +74,10 @@ public class ConsultorSynsets {
         seleccionSynsetsUsuario.forEach(s -> {
             List<String> aux2 = Splitter.on(":").splitToList(s);
 
-            assert aux2.size() == 3;
-
             mapeoPalabraSynsets.put(aux2.get(0), Integer.parseInt(aux2.get(1)));
-
             mapeoSynsetPalabra.put(Integer.parseInt(aux2.get(1)), aux2.get(2));
         });
 
-        // {'manta': {23345: 1, 45553: 3}, 'casa': {34431: 5, 3234: 2}}
         Map<String, Map<Integer, AtomicLong>> wordSynsetCounter = new HashMap<>();
 
         mapeoPalabraSynsets.keySet().forEach(word -> {
@@ -102,9 +96,9 @@ public class ConsultorSynsets {
         wordSynsetCounter.forEach((palabra, synsetCounter) -> {
             Map<String, Integer> synsetSynonymCounter = new HashMap<>();
 
-            synsetCounter.forEach((synset_id, cantidad) -> {
-                synsetSynonymCounter.put(synset_id + "$$" + mapeoSynsetPalabra.get(synset_id), Math.toIntExact(cantidad.get()));
-            });
+            synsetCounter.forEach((synset_id, cantidad) -> synsetSynonymCounter.put(
+                    synset_id + "$$" + mapeoSynsetPalabra.get(synset_id), Math.toIntExact(cantidad.get()))
+            );
 
             wordSynsetSynonymCounter.put(palabra, synsetSynonymCounter);
         });

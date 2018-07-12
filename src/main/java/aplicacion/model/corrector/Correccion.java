@@ -4,6 +4,18 @@ import org.languagetool.rules.RuleMatch;
 
 import java.util.List;
 
+/**
+ * Caracteriza a una determinada corrección dentro de un texto libre.
+ * Una corrección tiene las siguientes características:
+ *  - Identificador único de corrección
+ *  - Palabra mal escrita
+ *  - Indice de char inicial donde está el error
+ *  - Indice de char final donde está el error
+ *  - Mensaje con el error ortográfico que se encontró
+ *  - Lista de palabras con los reemplazos sugeridos
+ *
+ *  @author Francisco Serrano <francisco.serrano372@gmail.com>, Martín Santillán Cooper <marsancoo@gmail.com>
+ */
 public class Correccion {
 
     private final long id;

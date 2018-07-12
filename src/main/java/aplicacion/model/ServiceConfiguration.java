@@ -1,10 +1,23 @@
-package aplicacion;
+package aplicacion.model;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+/**
+ * Clase contenedora de la configuración a inyectar en el modelo (base de datos y servidor).
+ *
+ * Contiene los siguientes datos:
+ *  - Dirección IP de la Base de Datos
+ *  - Nombre de la Base de Datos
+ *  - Username
+ *  - Password
+ *  - URL del Servidor
+ *  - Puerto del Socket interno del Servidor
+ *
+ * @author Francisco Serrano <francisco.serrano372@gmail.com>, Martín Santillán Cooper <marsancoo@gmail.com>
+ */
 @Component
 @PropertySource("classpath:serviceconfig.properties")
 @ConfigurationProperties
@@ -28,26 +41,50 @@ public class ServiceConfiguration {
     @Value("${serversocket_port}")
     private String serversocket_port;
 
+    /**
+     * Retorna la IP de la base de datos
+     * @return String con la IP de la base de datos
+     */
     public String getDatabase_ip() {
         return database_ip;
     }
 
+    /**
+     * Retorna el nombre de la base de datos
+     * @return String con el nombre de la base de datos
+     */
     public String getDatabase_name() {
         return database_name;
     }
 
+    /**
+     * Retorna el nombre de usuario para loguearse al servidor de la base
+     * @return String con el username del servidor de la base
+     */
     public String getDatabase_user() {
         return database_user;
     }
 
+    /**
+     * Retorna la contraseña para loguearse al servidor de la base
+     * @return String con el password del servidor de la base
+     */
     public String getDatabase_pass() {
         return database_pass;
     }
 
+    /**
+     * Retorna la URL del servicio de las PPS
+     * @return String con la URL del servicio de las PPS
+     */
     public String getServer_url() {
         return server_url;
     }
 
+    /**
+     * Retorna el puerto del socket interno del servicio
+     * @return String con el puerto del socket interno del servicio
+     */
     public int getServersocket_port() {
         return Integer.parseInt(serversocket_port);
     }
