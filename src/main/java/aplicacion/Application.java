@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     TODO: Cambiar el formato de los contadores
     TODO: Armar tabla con los contadores
     TODO: Arreglar SynsetCounter -> Al pasar como parámetro BACALAO retorna un JSON VACIO
+    TODO: Ir loggeando
  */
 
 

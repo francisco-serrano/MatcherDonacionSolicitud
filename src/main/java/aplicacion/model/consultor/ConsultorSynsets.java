@@ -123,7 +123,7 @@ public class ConsultorSynsets {
 
         List<String> palabrasObtener = Splitter.on(',').splitToList(listaPalabras);
 
-        if (palabrasObtener.size() == 1 && palabrasObtener.get(0).equals(""))
+        if (palabrasObtener.size() == 1 && (palabrasObtener.get(0).equals("") || !mapeoPalabraSynsets.keySet().contains(palabrasObtener.get(0))))
             return wordSynsetSynonymCounter;
 
         wordSynsetSynonymCounter.keySet().stream()
