@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
  *  - Nombre de la Base de Datos
  *  - Username
  *  - Password
+ *  - Query a correr en la base para obtener los synsets
  *  - URL del Servidor
  *  - Puerto del Socket interno del Servidor
  *
@@ -35,14 +36,12 @@ public class ServiceConfiguration {
     @Value("${database_pass}")
     private String database_pass;
 
-    @Value("${server_url}")
-    private String server_url;
-
-    @Value("${serversocket_port}")
-    private String serversocket_port;
+    @Value("${database_query}")
+    private String database_query;
 
     /**
      * Retorna la IP de la base de datos
+     *
      * @return String con la IP de la base de datos
      */
     public String getDatabase_ip() {
@@ -51,6 +50,7 @@ public class ServiceConfiguration {
 
     /**
      * Retorna el nombre de la base de datos
+     *
      * @return String con el nombre de la base de datos
      */
     public String getDatabase_name() {
@@ -59,6 +59,7 @@ public class ServiceConfiguration {
 
     /**
      * Retorna el nombre de usuario para loguearse al servidor de la base
+     *
      * @return String con el username del servidor de la base
      */
     public String getDatabase_user() {
@@ -67,25 +68,14 @@ public class ServiceConfiguration {
 
     /**
      * Retorna la contraseña para loguearse al servidor de la base
+     *
      * @return String con el password del servidor de la base
      */
     public String getDatabase_pass() {
         return database_pass;
     }
 
-    /**
-     * Retorna la URL del servicio de las PPS
-     * @return String con la URL del servicio de las PPS
-     */
-    public String getServer_url() {
-        return server_url;
-    }
-
-    /**
-     * Retorna el puerto del socket interno del servicio
-     * @return String con el puerto del socket interno del servicio
-     */
-    public int getServersocket_port() {
-        return Integer.parseInt(serversocket_port);
+    public String getDatabase_query() {
+        return database_query;
     }
 }

@@ -1,15 +1,13 @@
 package aplicacion.model.consultor;
 
 import aplicacion.model.ServiceConfiguration;
+import aplicacion.model.detector.Recurso;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import org.springframework.core.io.ClassPathResource;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -25,18 +23,38 @@ public class ConsultorSynsets {
         String url = "jdbc:mysql://" + configuration.getDatabase_ip() + "/" + configuration.getDatabase_name() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
-            query = new ClassPathResource("query_modificado.sql").toString();
+            query = configuration.getDatabase_query();
             connection = DriverManager.getConnection(url, configuration.getDatabase_user(), configuration.getDatabase_pass());
-        } catch (SQLException /*| IOException*/ e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Multimap<Integer, String> getSynsets(String word) {
+    public List<String> getSynsets(List<Recurso> resourcesList) {
+        Map<String, Map<Integer, Collection<String>>> synsetMapping = resourcesList.stream()
+                .collect(Collectors.toMap(
+                        Recurso::getName,
+                        recurso -> getSynsets(recurso.getName()).asMap()
+                ));
+
+        List<String> synsetMappingFormatted = new ArrayList<>();
+        String pattern = "[\\[\\]]";
+
+        synsetMapping.forEach((palabra, synsets) -> synsets.forEach(
+                (id_synset, lista_sinonimos) -> synsetMappingFormatted.add(
+                        (palabra + ":" + id_synset + ":" + lista_sinonimos.toString()).replaceAll(pattern, "")
+                )
+        ));
+
+        return synsetMappingFormatted;
+    }
+
+    private Multimap<Integer, String> getSynsets(String word) {
         Multimap<Integer, String> synsets = ArrayListMultimap.create();
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
+
             statement.setString(1, word.toLowerCase());
             ResultSet resultSet = statement.executeQuery();
 
@@ -54,16 +72,16 @@ public class ConsultorSynsets {
         return synsets;
     }
 
-    public String selectSynsets(String synsetSelection) {
-        if (synsetSelection.length() == 0) {
-            System.out.println("SE MANDO UN STRING VACIO --> NINGUNO DE LOS SYNSETS ENVIADOS SE CORRESPONDEN!!!");
+    public String selectSynsets(String synsetSelection, boolean estaDonando) {
+        if (synsetSelection.length() == 0)
+            return "SE MANDO UN STRING VACIO --> NINGUNO DE LOS SYNSETS ENVIADOS SE CORRESPONDEN!!!";
 
-            // TODO: Ir a la base y agregarlo
-        }
-
+        // Se agrega a una lista interna
         seleccionSynsetsUsuario.addAll(Splitter.on("; ").splitToList(synsetSelection));
 
-        return "Selección almacenada";
+        // TODO: Dar de alta en la tabla
+
+        return "Se almacenó correctamente -> " + synsetSelection;
     }
 
     public Map<String, Map<String, Integer>> getSynsetCounter(String listaPalabras) {

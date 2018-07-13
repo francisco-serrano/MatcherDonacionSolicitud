@@ -5,6 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
     TODO: Modelo parcialmente documentado
+
+    TODO: Cambiar el formato de los contadores
+    TODO: Armar tabla con los contadores
+    TODO: Arreglar SynsetCounter -> Al pasar como parámetro BACALAO retorna un JSON VACIO
  */
 
 
