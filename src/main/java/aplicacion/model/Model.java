@@ -5,13 +5,9 @@ import aplicacion.model.corrector.CorrectorOrtografico;
 import aplicacion.model.detector.DetectorRecursos;
 import aplicacion.model.detector.Recurso;
 import aplicacion.model.consultor.ConsultorSynsets;
-import com.google.common.collect.Multimap;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Clase que engloba a las distintas herramientas del servicio, a saber:

@@ -26,7 +26,7 @@ public class Controlador {
     private static final String RESULTADO_SYNSETS = "RESULTADO: SYNSETS ENCONTRADOS\n";
 
     /**
-     * Instancia el modelo, haciendo la correspondiente inyección de la dependencia con su configuración.
+     * Instancia el modelo, haciendo la correspondiente inyección de la configuración.
      *
      * @param configuration Dependencia con la configuración a inyectar en el modelo.
      */

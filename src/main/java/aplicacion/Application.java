@@ -4,12 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
+    SERVICIO
     TODO: Modelo parcialmente documentado
-
-    TODO: Cambiar el formato de los contadores
-    TODO: Armar tabla con los contadores
-    TODO: Arreglar SynsetCounter -> Al pasar como parámetro BACALAO retorna un JSON VACIO
     TODO: Ir loggeando
+
+    BASE DE DATOS
+    TODO: Actualizar en la base los contadores de synsets
+    TODO: Actualizar en la base las altas de donaciones/peticiones
  */
 
 
