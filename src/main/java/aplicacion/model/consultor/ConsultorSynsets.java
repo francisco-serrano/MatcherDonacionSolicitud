@@ -72,16 +72,26 @@ public class ConsultorSynsets {
         return synsets;
     }
 
-    public String selectSynsets(String synsetSelection, boolean estaDonando) {
-        if (synsetSelection.length() == 0)
-            return "SE MANDO UN STRING VACIO --> NINGUNO DE LOS SYNSETS ENVIADOS SE CORRESPONDEN!!!";
+    public Map<String, Object> selectSynsets(String synsetSelection, boolean estaDonando) {
+        Map<String, Object> jsonRetornar = new HashMap<>();
+
+        if (synsetSelection.length() == 0) {
+            jsonRetornar.put("mensaje", "Se mandó un String vacío");
+
+            return jsonRetornar;
+        }
 
         // Se agrega a una lista interna
-        seleccionSynsetsUsuario.addAll(Splitter.on("; ").splitToList(synsetSelection));
+        List<String> listaDesambiguaciones = Splitter.on("; ").splitToList(synsetSelection);
+
+        seleccionSynsetsUsuario.addAll(listaDesambiguaciones);
 
         // TODO: Dar de alta en la tabla
 
-        return "Se almacenó correctamente -> " + synsetSelection;
+        jsonRetornar.put("mensaje", "Desambiguación almacenada correctamente");
+        jsonRetornar.put("desambiguaciones-almacenadas", listaDesambiguaciones);
+
+        return jsonRetornar;
     }
 
     public Map<String, Map<String, Integer>> getSynsetCounter(String listaPalabras) {

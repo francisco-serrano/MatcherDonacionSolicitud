@@ -45,7 +45,7 @@ public class Model {
         return consultor.getSynsets(resourcesList);
     }
 
-    public String selectSynsets(String synsetSelection, boolean estaDonando) {
+    public Map<String, Object> selectSynsets(String synsetSelection, boolean estaDonando) {
         return consultor.selectSynsets(synsetSelection, estaDonando);
     }
 
