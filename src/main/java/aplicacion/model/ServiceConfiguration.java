@@ -39,6 +39,12 @@ public class ServiceConfiguration {
     @Value("${database_query}")
     private String database_query;
 
+    @Value("${resultado_corrector}")
+    private String resultado_corrector;
+
+    @Value("${resultado_detector}")
+    private String resultado_detector;
+
     /**
      * Retorna la IP de la base de datos
      *
@@ -77,5 +83,13 @@ public class ServiceConfiguration {
 
     public String getDatabase_query() {
         return database_query;
+    }
+
+    public String getResultado_corrector() {
+        return resultado_corrector;
+    }
+
+    public String getResultado_detector() {
+        return resultado_detector;
     }
 }

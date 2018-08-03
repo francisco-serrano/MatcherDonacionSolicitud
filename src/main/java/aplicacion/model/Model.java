@@ -5,7 +5,11 @@ import aplicacion.model.corrector.CorrectorOrtografico;
 import aplicacion.model.detector.DetectorRecursos;
 import aplicacion.model.detector.Recurso;
 import aplicacion.model.consultor.ConsultorSynsets;
+import aplicacion.model.detector.RecursoDetectado;
+import com.google.common.collect.Multimap;
+import javafx.util.Pair;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +28,9 @@ public class Model {
     private DetectorRecursos detector = new DetectorRecursos();
     private ConsultorSynsets consultor = new ConsultorSynsets();
 
+    private static String resultado_corrector;
+    private static String resultado_detector;
+
     /**
      * Constructor de la clase que se encarga de configurar la base de datos y el socket
      *
@@ -31,24 +38,35 @@ public class Model {
      */
     public Model(ServiceConfiguration configuration) {
         setDatabaseConfiguration(configuration);
+
+        resultado_corrector = configuration.getResultado_corrector();
+        resultado_detector = configuration.getResultado_detector();
     }
 
-    public List<Correccion> detectSpellingMistakes(String text) {
-        return corrector.check(text);
-    }
+    public Map<String, Object> generateJsonOutput(String plainText) {
+        List<Correccion> correcciones = detectSpellingMistakes(plainText);
+        if (!correcciones.isEmpty())
+            return Model.generateErrorMessage(resultado_corrector, correcciones);
 
-    public List<Recurso> detectResources(String text) {
-        return detector.detect(text);
-    }
+        List<Recurso> recursosDetectados = detectResources(plainText);
+        if (recursosDetectados.isEmpty())
+            return Model.generateErrorMessage(resultado_detector);
 
-    public List<String> getSynsetsFromResources(List<Recurso> resourcesList) {
-        return consultor.getSynsets(resourcesList);
+        List<String> valoresRadioButton = getSynsetsFromResources(recursosDetectados);
+
+        var parRecursosDesambiguaciones = formatDetectedResourcesList(valoresRadioButton);
+
+        Map<String, Object> jsonGigante = new HashMap<>();
+        jsonGigante.put("valores-radio-button", valoresRadioButton);
+        jsonGigante.put("recursos-detectados", parRecursosDesambiguaciones.getKey());
+        jsonGigante.put("lista-desambiguaciones", parRecursosDesambiguaciones.getValue().asMap());
+
+        return jsonGigante;
     }
 
     public Map<String, Object> selectSynsets(String synsetSelection, boolean estaDonando) {
         return consultor.selectSynsets(synsetSelection, estaDonando);
     }
-
 
     /**
      * Retorna un mapeo con los contadores de cada consultor para cada palabra, en caso de pasar por parámetro un
@@ -69,4 +87,35 @@ public class Model {
     private void setDatabaseConfiguration(ServiceConfiguration configuration) {
         consultor.setUpDatabase(configuration);
     }
+
+    private List<Correccion> detectSpellingMistakes(String text) {
+        return corrector.check(text);
+    }
+
+    private List<Recurso> detectResources(String text) {
+        return detector.detect(text);
+    }
+
+    private List<String> getSynsetsFromResources(List<Recurso> resourcesList) {
+        return consultor.getSynsets(resourcesList);
+    }
+
+    private Pair<List<RecursoDetectado>, Multimap<String, Object>> formatDetectedResourcesList(List<String> resourcesList) {
+        return ModelUtils.formatDetectedResourcesList(resourcesList);
+    }
+
+    private static Map<String, Object> generateErrorMessage(String message, Object optionalData) {
+        Map<String, Object> jsonRetornar = generateErrorMessage(message);
+        jsonRetornar.put("Información Adicional", optionalData);
+
+        return jsonRetornar;
+    }
+
+    private static Map<String, Object> generateErrorMessage(String message) {
+        Map<String, Object> jsonRetornar = new HashMap<>();
+        jsonRetornar.put("Mensaje", message);
+
+        return jsonRetornar;
+    }
+
 }

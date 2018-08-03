@@ -4,13 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
-    SERVICIO
-    TODO: Modelo parcialmente documentado
-    TODO: Ir loggeando
-
-    BASE DE DATOS
-    TODO: Actualizar en la base los contadores de synsets
-    TODO: Actualizar en la base las altas de donaciones/peticiones
+    TODO: Ir loggeando lo que pasa
+    TODO: Acomodar el código que es un asco
+    TODO: Dejar el ID de recurso listo para levantarlo a partir del query
+    TODO: Tratar de no usar Object en el retorno del JSON
+    TODO: Tratar de documentar el código
  */
 
 

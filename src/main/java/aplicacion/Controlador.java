@@ -1,19 +1,11 @@
 package aplicacion;
 
 import aplicacion.model.Model;
-import aplicacion.model.RecursoDetectado;
 import aplicacion.model.ServiceConfiguration;
-import aplicacion.model.corrector.Correccion;
-import aplicacion.model.detector.Recurso;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Clase que recibe la interacción del cliente con el servidor. Se encarga de servir la página, instanciar el modelo
@@ -25,10 +17,6 @@ import java.util.stream.Collectors;
 public class Controlador {
 
     private Model model;
-
-    private static final String RESULTADO_CORRECTOR = "RESULTADO: ERRORES ORTOGRAFICOS DETECTADOS\n";
-    private static final String RESULTADO_DETECTOR = "RESULTADO: NO SE DETECTARON RECURSOS\n";
-    private static final String RESULTADO_SYNSETS = "RESULTADO: SYNSETS ENCONTRADOS\n";
 
     /**
      * Instancia el modelo, haciendo la correspondiente inyección de la configuración.
@@ -44,46 +32,7 @@ public class Controlador {
     public Map<String, Object> analyzePlainText(
             @RequestParam(value = "text") String plainText
     ) {
-        List<Correccion> correcciones = model.detectSpellingMistakes(plainText);
-
-        if (!correcciones.isEmpty()) {
-            Map<String, Object> jsonRetornar = new HashMap<>();
-            jsonRetornar.put("Mensaje", RESULTADO_CORRECTOR);
-            jsonRetornar.put("Correcciones", correcciones);
-
-            return jsonRetornar;
-        }
-
-        List<Recurso> recursosDetectados = model.detectResources(plainText);
-
-        if (recursosDetectados.isEmpty()) {
-            Map<String, Object> jsonRetornar = new HashMap<>();
-            jsonRetornar.put("Mensaje", RESULTADO_DETECTOR);
-
-            return jsonRetornar;
-        }
-
-        List<String> valoresRadioButton = model.getSynsetsFromResources(recursosDetectados);
-
-        Multimap<String, Object> listaDesambiguaciones = ArrayListMultimap.create();
-        List<Map<String, Object>> listaRecursosDetectados = valoresRadioButton.stream()
-                .map(valorRadioButton -> Splitter.on(':').splitToList(valorRadioButton))
-                .map(listaValores -> {
-                            RecursoDetectado recursoDetectado = new RecursoDetectado(1234, Integer.parseInt(listaValores.get(1)), listaValores.get(0), 1);
-                            listaDesambiguaciones.put(listaValores.get(0), recursoDetectado);
-                            return recursoDetectado;
-                        }
-                )
-                .map(RecursoDetectado::toMap)
-                .collect(Collectors.toList());
-
-
-        Map<String, Object> jsonGigante = new HashMap<>();
-        jsonGigante.put("valores-radio-button", valoresRadioButton);
-        jsonGigante.put("recursos-detectados", listaRecursosDetectados);
-        jsonGigante.put("lista-desambiguaciones", listaDesambiguaciones.asMap());
-
-        return jsonGigante;
+        return model.generateJsonOutput(plainText);
     }
 
     @RequestMapping(value = "/synsetselection", method = RequestMethod.POST, produces = "application/json")
