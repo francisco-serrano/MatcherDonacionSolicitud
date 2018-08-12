@@ -8,7 +8,6 @@ import com.google.common.collect.Multimap;
 
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -17,7 +16,12 @@ public class ConsultorSynsets {
     private Connection connection;
     private String query;
 
-    private final List<String> seleccionSynsetsUsuario = new CopyOnWriteArrayList<>();
+    /*
+        seleccionSynsetsUsuario
+        Almacena cada desambiguación que el user envía
+        Ahora se almacena en memoria pero debería ir a la base
+     */
+    private final List<SeleccionSynset> seleccionSynsetsUsuario = new ArrayList<>();
 
     public void setUpDatabase(ServiceConfiguration configuration) {
         String url = "jdbc:mysql://" + configuration.getDatabase_ip() + "/" + configuration.getDatabase_name() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
@@ -83,10 +87,16 @@ public class ConsultorSynsets {
 
         // Se agrega a una lista interna
         List<String> listaDesambiguaciones = Splitter.on("; ").splitToList(synsetSelection);
+        listaDesambiguaciones.forEach(str -> {
+            List<String> elementosSeleccion = Splitter.on(":").splitToList(str);
 
-        seleccionSynsetsUsuario.addAll(listaDesambiguaciones);
+            String recurso = elementosSeleccion.get(0);
+            int idSynset = Integer.parseInt(elementosSeleccion.get(1));
+            String sinonimos = elementosSeleccion.get(2);
 
-        // TODO: Dar de alta en la tabla
+            // TODO: Dar de alta la selección de synset(desambiguación) en la base de datos
+            seleccionSynsetsUsuario.add(new SeleccionSynset(recurso, idSynset, sinonimos, estaDonando));
+        });
 
         jsonRetornar.put("mensaje", "Desambiguación almacenada correctamente");
         jsonRetornar.put("desambiguaciones-almacenadas", listaDesambiguaciones);
@@ -95,19 +105,19 @@ public class ConsultorSynsets {
     }
 
     public Map<String, Map<String, Integer>> getSynsetCounter(String listaPalabras) {
+        // Almacena los synsets relacionados a un solo recurso. Ej: (manta) -> {12345, 34567, 56789}
         Multimap<String, Integer> mapeoPalabraSynsets = ArrayListMultimap.create();
 
+        // Mapea cada idSynset con las demás palabras que contiene el synset
         Map<Integer, String> mapeoSynsetPalabra = new HashMap<>();
 
-        seleccionSynsetsUsuario.forEach(s -> {
-            List<String> aux2 = Splitter.on(":").splitToList(s);
-
-            mapeoPalabraSynsets.put(aux2.get(0), Integer.parseInt(aux2.get(1)));
-            mapeoSynsetPalabra.put(Integer.parseInt(aux2.get(1)), aux2.get(2));
+        // TODO: Implementar que seleccionSynsetsUsuario venga de la base de datos
+        seleccionSynsetsUsuario.forEach(seleccion -> {
+            mapeoPalabraSynsets.put(seleccion.getRecurso(), seleccion.getIdSynset());
+            mapeoSynsetPalabra.put(seleccion.getIdSynset(), seleccion.getSinonimos());
         });
 
         Map<String, Map<Integer, AtomicLong>> wordSynsetCounter = new HashMap<>();
-
         mapeoPalabraSynsets.keySet().forEach(word -> {
             Map<Integer, AtomicLong> contadorSynsets = new HashMap<>();
 
@@ -120,7 +130,6 @@ public class ConsultorSynsets {
         });
 
         Map<String, Map<String, Integer>> wordSynsetSynonymCounter = new HashMap<>();
-
         wordSynsetCounter.forEach((palabra, synsetCounter) -> {
             Map<String, Integer> synsetSynonymCounter = new HashMap<>();
 

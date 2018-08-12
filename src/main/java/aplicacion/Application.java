@@ -3,15 +3,6 @@ package aplicacion;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/*
-    TODO: Ir loggeando lo que pasa
-    TODO: Acomodar el código que es un asco
-    TODO: Dejar el ID de recurso listo para levantarlo a partir del query
-    TODO: Tratar de no usar Object en el retorno del JSON
-    TODO: Tratar de documentar el código
- */
-
-
 /**
  * Clase donde se inicia la ejecución
  *
