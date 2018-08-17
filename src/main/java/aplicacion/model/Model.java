@@ -54,7 +54,7 @@ public class Model {
 
         List<String> valoresRadioButton = getSynsetsFromResources(recursosDetectados);
 
-        var parRecursosDesambiguaciones = formatDetectedResourcesList(valoresRadioButton);
+        Pair<List<RecursoDetectado>,Multimap<String,Object>> parRecursosDesambiguaciones = formatDetectedResourcesList(valoresRadioButton);
 
         Map<String, Object> jsonGigante = new HashMap<>();
         jsonGigante.put("valores-radio-button", valoresRadioButton);
