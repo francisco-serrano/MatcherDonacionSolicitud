@@ -6,7 +6,7 @@
 
     <groupId>pps.servicio</groupId>
     <artifactId>serviciopps</artifactId>
-    <version>2.1-BETA</version>
+    <version>2.2-BETA</version>
 
     <properties>
         <java.version>10</java.version>
@@ -76,6 +76,14 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp -->
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+
 
     </dependencies>
 

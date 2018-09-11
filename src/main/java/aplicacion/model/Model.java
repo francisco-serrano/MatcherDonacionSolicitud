@@ -3,6 +3,7 @@ package aplicacion.model;
 import aplicacion.model.corrector.Correccion;
 import aplicacion.model.corrector.CorrectorOrtografico;
 import aplicacion.model.detector.DetectorRecursos;
+import aplicacion.model.detector.Lematizador;
 import aplicacion.model.detector.Recurso;
 import aplicacion.model.consultor.ConsultorSynsets;
 import aplicacion.model.detector.RecursoDetectado;
@@ -26,6 +27,7 @@ public class Model {
 
     private CorrectorOrtografico corrector = new CorrectorOrtografico();
     private DetectorRecursos detector = new DetectorRecursos();
+    private Lematizador lematizador = new Lematizador();
     private ConsultorSynsets consultor = new ConsultorSynsets();
 
     private static String resultado_corrector;
@@ -52,9 +54,11 @@ public class Model {
         if (recursosDetectados.isEmpty())
             return Model.generateErrorMessage(resultado_detector);
 
+        recursosDetectados.forEach(recurso -> recurso.setName(lematizador.lemmatize(recurso.getName().toLowerCase())));
+
         List<String> valoresRadioButton = getSynsetsFromResources(recursosDetectados);
 
-        var parRecursosDesambiguaciones = formatDetectedResourcesList(valoresRadioButton);
+        Pair<List<RecursoDetectado>, Multimap<String, Object>> parRecursosDesambiguaciones = formatDetectedResourcesList(valoresRadioButton);
 
         Map<String, Object> jsonGigante = new HashMap<>();
         jsonGigante.put("valores-radio-button", valoresRadioButton);

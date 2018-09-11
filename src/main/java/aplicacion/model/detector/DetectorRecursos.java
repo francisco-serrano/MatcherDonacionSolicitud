@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DetectorRecursos {
-
     public List<Recurso> detect(String plainText) {
         ClasifierAND clasifier = new ClasifierAND(new MatchingClasifier(), new SintacticClasifier());
         List<Resource> resultList = clasifier.clasify(plainText.toLowerCase());

@@ -21,32 +21,13 @@ public class Recurso {
         this.isNew = resource.isNew();
     }
 
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
     }
 
-    public String getStemm() {
-        return stemm;
-    }
-
-    public int getCant() {
-        return cant;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public boolean isCoincidence() {
-        return isCoincidence;
-    }
-
-    public boolean isNew() {
-        return isNew;
+    public void setName(String name) {
+        this.name = name;
     }
 
     //TODO: lo ideal sería pasarlo a JSON
