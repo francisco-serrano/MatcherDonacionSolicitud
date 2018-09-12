@@ -70,7 +70,7 @@ public class RepositorioLemas {
 
     public void connect() {
         try {
-            connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", dbDir));
+            connection = DriverManager.getConnection(String.format("jdbc:sqlite::resource:%s", dbDir));
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
