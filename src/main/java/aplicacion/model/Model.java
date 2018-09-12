@@ -3,12 +3,12 @@ package aplicacion.model;
 import aplicacion.model.corrector.Correccion;
 import aplicacion.model.corrector.CorrectorOrtografico;
 import aplicacion.model.detector.DetectorRecursos;
-import aplicacion.model.detector.Lematizador;
-import aplicacion.model.detector.Recurso;
+import aplicacion.model.lematizador.Lematizador;
 import aplicacion.model.consultor.ConsultorSynsets;
 import aplicacion.model.detector.RecursoDetectado;
 import com.google.common.collect.Multimap;
 import javafx.util.Pair;
+import operativa.system.Resource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,7 @@ public class Model {
         if (!correcciones.isEmpty())
             return Model.generateErrorMessage(resultado_corrector, correcciones);
 
-        List<Recurso> recursosDetectados = detectResources(plainText);
+        List<Resource> recursosDetectados = detectResources(plainText);
         if (recursosDetectados.isEmpty())
             return Model.generateErrorMessage(resultado_detector);
 
@@ -96,11 +96,11 @@ public class Model {
         return corrector.check(text);
     }
 
-    private List<Recurso> detectResources(String text) {
+    private List<Resource> detectResources(String text) {
         return detector.detect(text);
     }
 
-    private List<String> getSynsetsFromResources(List<Recurso> resourcesList) {
+    private List<String> getSynsetsFromResources(List<Resource> resourcesList) {
         return consultor.getSynsets(resourcesList);
     }
 

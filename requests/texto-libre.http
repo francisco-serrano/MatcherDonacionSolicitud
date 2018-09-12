@@ -1,0 +1,4 @@
+GET /textanalyzer?text=Quiero donar dos mantas y un abadejo HTTP/1.1
+Host: localhost:8080
+
+###

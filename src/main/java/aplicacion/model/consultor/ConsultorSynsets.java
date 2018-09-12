@@ -1,10 +1,10 @@
 package aplicacion.model.consultor;
 
 import aplicacion.model.ServiceConfiguration;
-import aplicacion.model.detector.Recurso;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import operativa.system.Resource;
 
 import java.sql.*;
 import java.util.*;
@@ -34,10 +34,10 @@ public class ConsultorSynsets {
         }
     }
 
-    public List<String> getSynsets(List<Recurso> resourcesList) {
+    public List<String> getSynsets(List<Resource> resourcesList) {
         Map<String, Map<Integer, Collection<String>>> synsetMapping = resourcesList.stream()
                 .collect(Collectors.toMap(
-                        Recurso::getName,
+                        Resource::getName,
                         recurso -> getSynsets(recurso.getName()).asMap()
                 ));
 
