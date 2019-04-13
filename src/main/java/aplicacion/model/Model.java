@@ -7,7 +7,7 @@ import aplicacion.model.detector.Recurso;
 import aplicacion.model.consultor.ConsultorSynsets;
 import aplicacion.model.detector.RecursoDetectado;
 import com.google.common.collect.Multimap;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +100,7 @@ public class Model {
         return consultor.getSynsets(resourcesList);
     }
 
-    private Pair<List<RecursoDetectado>, Multimap<String, Object>> formatDetectedResourcesList(List<String> resourcesList) {
+    private Map.Entry<List<RecursoDetectado>, Multimap<String, Object>> formatDetectedResourcesList(List<String> resourcesList) {
         return ModelUtils.formatDetectedResourcesList(resourcesList);
     }
 

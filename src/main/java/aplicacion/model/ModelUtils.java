@@ -4,14 +4,16 @@ import aplicacion.model.detector.RecursoDetectado;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ModelUtils {
 
-    public static Pair<List<RecursoDetectado>, Multimap<String, Object>> formatDetectedResourcesList(List<String> resourcesList) {
+    public static Map.Entry<List<RecursoDetectado>, Multimap<String, Object>> formatDetectedResourcesList(List<String> resourcesList) {
         Multimap<String, Object> listaDesambiguaciones = ArrayListMultimap.create();
         List<RecursoDetectado> listaRecursosDetectados = resourcesList.stream()
                 .map(resource -> Splitter.on(':').splitToList(resource))
@@ -23,7 +25,7 @@ public class ModelUtils {
                 )
                 .collect(Collectors.toList());
 
-        return new Pair<>(listaRecursosDetectados, listaDesambiguaciones);
+        return new AbstractMap.SimpleEntry<>(listaRecursosDetectados, listaDesambiguaciones);
     }
 
 }

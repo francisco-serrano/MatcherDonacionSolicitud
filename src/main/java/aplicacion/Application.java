@@ -1,7 +1,11 @@
 package aplicacion;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /*
     TODO: Ir loggeando lo que pasa
@@ -18,6 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Francisco Serrano <francisco.serrano372@gmail.com>, Martín Santillán Cooper <marsancoo@gmail.com>
  */
 @SpringBootApplication
+@EnableWebMvc
+@Configuration
 public class Application {
 
     /**

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mysql-pps:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ppspps
+    ports:
+      - '3306:3306'
+    volumes:
+      - /host_mnt/c/Users/Francisco/Documents/docker-mysql-pps:/var/lib/mysql
+    container_name: mysql-pps
+
+  matcher-pps:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql-pps
+    container_name: matcher-pps
